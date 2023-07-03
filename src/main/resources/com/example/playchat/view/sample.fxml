@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import javafx.scene.text.Font?>
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:id="ap_main" fx:controller="com.example.playchat.view.Sample"
+            prefHeight="396" prefWidth="478">
+
+    <children>
+        <Button fx:id="button_send" layoutX="404" layoutY="338" text="send"/>
+        <TextField fx:id="tf_message" layoutX="30" layoutY="338"
+                   prefWidth="361" prefHeight="26" />
+        <ScrollPane fx:id="sp_main" layoutY="70" layoutX="30"
+                    prefHeight="256" prefWidth="418" fitToWidth="true" >
+            <content>
+                <VBox fx:id="vBox_message" prefHeight="248"
+                      prefWidth="412" />
+            </content>
+        </ScrollPane>
+        <Label layoutX="114" layoutY="26"
+        text="wittcode's messenger">
+            <font>
+                <Font name="Arial Rounded MT Bold" size="23">
+
+                </Font>
+            </font>
+        </Label>
+    </children>
+
+</AnchorPane>
