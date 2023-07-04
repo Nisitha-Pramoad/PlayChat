@@ -1,8 +1,6 @@
 package com.example.playchat;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
@@ -46,15 +44,13 @@ public class ClientController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        vBox_message.heightProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
-            sp_main.setVvalue(newValue.doubleValue());
-        });
+        vBox_message.heightProperty().addListener((observable, oldValue, newValue) -> sp_main.setVvalue(newValue.doubleValue()));
 
         button_send.setOnAction(event -> {
             String messageToSend = tf_message.getText().trim();
             if (!messageToSend.isEmpty()) {
                 sendMessage(name + " : " + messageToSend);
-                addMessageToChat(name, messageToSend, true); // Add sender's message on the right side
+                addLabel(name + " : " + messageToSend, true);
                 tf_message.clear();
             }
         });
@@ -87,11 +83,7 @@ public class ClientController implements Initializable {
                 String message;
                 while ((message = bufferedReader.readLine()) != null) {
                     final String finalMessage = message;
-                    Platform.runLater(() -> {
-                        String senderName = finalMessage.substring(0, finalMessage.indexOf(" : "));
-                        String messageContent = finalMessage.substring(finalMessage.indexOf(" : ") + 3);
-                        addMessageToChat(senderName, messageContent, false); // Add received message on the left side
-                    });
+                    Platform.runLater(() -> addLabel(finalMessage, false));
                 }
             } catch (IOException e) {
                 closeAll();
@@ -111,29 +103,31 @@ public class ClientController implements Initializable {
         }
     }
 
-    public void addMessageToChat(String sender, String messageContent, boolean isSender) {
+    public void addLabel(String messageFromClient, boolean isSentMessage) {
         HBox hBox = new HBox();
-        Text senderText = new Text(sender + ": ");
-        Text messageText = new Text(messageContent);
-        TextFlow textFlow = new TextFlow(senderText, messageText);
+        Text text = new Text(messageFromClient);
+        TextFlow textFlow = new TextFlow(text);
 
-        textFlow.setStyle("-fx-background-color: rgb(15,125,242);" +
-                "-fx-background-radius: 20px;");
-        textFlow.setPadding(new Insets(5, 10, 5, 10));
+        // Set background color and text color based on sent or received message
+        if (isSentMessage) {
+            textFlow.setStyle("-fx-background-color: #ACBBBC; -fx-background-radius: 20px;");
+            text.setFill(Color.BLACK);
+        } else {
+            textFlow.setStyle("-fx-background-color: #00FF00; -fx-background-radius: 20px;");
+            text.setFill(Color.BLACK);
+        }
+
+        textFlow.setPadding(new Insets(5, 5, 5, 10));
 
         hBox.getChildren().add(textFlow);
 
-        // Set alignment based on sender or receiver
-        if (isSender) {
-            hBox.setAlignment(Pos.CENTER_RIGHT);
-        } else {
-            hBox.setAlignment(Pos.CENTER_LEFT);
-        }
+        // Set alignment based on sent or received message
+        hBox.setAlignment(isSentMessage ? Pos.CENTER_RIGHT : Pos.CENTER_LEFT);
+        hBox.setPadding(new Insets(1)); // Set the padding around the HBox
 
-        Platform.runLater(() -> {
-            vBox_message.getChildren().add(hBox);
-        });
+        Platform.runLater(() -> vBox_message.getChildren().add(hBox));
     }
+
 
     private void setUserName() {
         lblUserName.setText(name);
