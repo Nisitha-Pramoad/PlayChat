@@ -3,13 +3,12 @@ package com.example.playchat;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
@@ -19,11 +18,9 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
 import java.io.*;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
-import java.util.Scanner;
 
 public class ClientController implements Initializable {
 
@@ -39,165 +36,119 @@ public class ClientController implements Initializable {
     @FXML
     private VBox vBox_message;
 
-    private Server server;
+    @FXML
+    private Label lblUserName;
 
     private Socket socket;
     private BufferedReader bufferedReader;
     private BufferedWriter bufferedWriter;
     private String name;
 
-    public ClientController(Socket socket, String name) {
-        try {
-            this.socket = socket;
-            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.name = name;
-        }catch (IOException e) {
-            closeAll(socket, bufferedReader, bufferedWriter);
-        }
-    }
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        vBox_message.heightProperty().addListener((ObservableValue<? extends Number> observable, Number oldValue, Number newValue) -> {
+            sp_main.setVvalue(newValue.doubleValue());
+        });
 
-    public void sendMessage(String messageToClient){
-        try {
-            bufferedWriter.write(name);
-            bufferedWriter.newLine();
-            bufferedWriter.flush();
-
-            //Scanner sc = new Scanner(System.in);
-
-            while (socket.isConnected()){
-                String messageToSend = messageToClient;
-                bufferedWriter.write(name + " : " + messageToSend);
-                bufferedWriter.newLine();
-                bufferedWriter.flush();
+        button_send.setOnAction(event -> {
+            String messageToSend = tf_message.getText().trim();
+            if (!messageToSend.isEmpty()) {
+                sendMessage(name + " : " + messageToSend);
+                addMessageToChat(name, messageToSend, true); // Add sender's message on the right side
+                tf_message.clear();
             }
+        });
+
+        setUserName();
+        startClient();
+    }
+
+    public ClientController(String name) {
+        this.name = name;
+    }
+
+    private void startClient() {
+        try {
+            socket = new Socket("localhost", 5000);
+            bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            sendMessage(name);
+            readMessages();
         } catch (IOException e) {
-            closeAll(socket, bufferedReader, bufferedWriter);
+            closeAll();
+            e.printStackTrace();
         }
     }
 
-    public void readMessage(VBox vbox) {
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                String msfGroupChat;
-
-                while (socket.isConnected()) {
-                    try {
-                        msfGroupChat = bufferedReader.readLine();
-                        System.out.println(msfGroupChat);
-                        //
-                        addLabel(msfGroupChat, vbox);
-                    } catch (IOException e) {
-                        closeAll(socket, bufferedReader, bufferedWriter);
-                    }
+    private void readMessages() {
+        new Thread(() -> {
+            try {
+                String message;
+                while ((message = bufferedReader.readLine()) != null) {
+                    final String finalMessage = message;
+                    Platform.runLater(() -> {
+                        String senderName = finalMessage.substring(0, finalMessage.indexOf(" : "));
+                        String messageContent = finalMessage.substring(finalMessage.indexOf(" : ") + 3);
+                        addMessageToChat(senderName, messageContent, false); // Add received message on the left side
+                    });
                 }
+            } catch (IOException e) {
+                closeAll();
+                e.printStackTrace();
             }
         }).start();
     }
 
-    public void closeAll(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter){
+    private void sendMessage(String message) {
         try {
-            if (bufferedReader!= null){
-                bufferedReader.close();
-            }
-            if (bufferedWriter!= null){
-                bufferedWriter.close();
-            }
-            if (socket!= null) {
-                socket.close();
-            }
+            bufferedWriter.write(message);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
         } catch (IOException e) {
-            e.getStackTrace();
-        }
-    }
-
-    /*public static void main(String args[]) throws IOException {
-        Scanner sc = new Scanner(System.in);
-        System.out.print("Enter your name : ");
-        String name = sc.nextLine();
-        Socket socket = new Socket("localhost" , 1234);
-        ClientController clientController = new ClientController(socket, name);
-        clientController.readMessage();
-        clientController.sendMessage();
-    }*/
-
-    @Override
-    public void initialize(URL location, ResourceBundle resources) {
-
-        try {
-            server = new Server(new ServerSocket(1234));
-        } catch (IOException e) {
+            closeAll();
             e.printStackTrace();
-            System.out.println("error creating server...");
         }
-
-        //vbox size change automatically...meka damme nathnam manually scoll karanna wenawa msg eka balanna..
-        vBox_message.heightProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-                //msg ekak apu gaman scroll pane eke size ekath wenas wenawa
-                sp_main.setVvalue((Double) newValue);
-            }
-        });
-
-        //server eka haraha client ewana msg vBox eke display karanawa
-        //server.receiveMessageFromClient(vBox_message);
-        readMessage(vBox_message);
-
-        button_send.setOnAction(new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-                String  messageToSend = tf_message.getText();
-                if (!messageToSend.isEmpty()) {
-                    HBox hBox = new HBox();
-                    hBox.setAlignment(Pos.CENTER_RIGHT);
-                    hBox.setPadding(new Insets(5, 5,5,10));
-
-                    Text text = new Text(messageToSend);
-                    //message eka loku wadinam eka wena line ekakata ganna ona ekayi rawp karanne..
-                    TextFlow textFlow = new TextFlow(text);
-
-                    textFlow.setStyle("-fx-color: rgb(239,242,255); " +
-                            "-fx-background-color: rgb(15,125,242);" +
-                            " -fx-background-radius: 20px;");
-
-                    textFlow.setPadding(new Insets(5,10,5,10));
-                    text.setFill(Color.color(0.934, 0.945, 0.996));
-
-                    hBox.getChildren().add(textFlow);
-                    vBox_message.getChildren().add(hBox);
-
-                    //server.sendMessageToClient(messageToSend);
-                    sendMessage(messageToSend);
-                    tf_message.clear();
-                }
-            }
-        });
     }
 
-    //message ekak awama eka gui ekata set karano
-    public static void addLabel(String messageFromClient, VBox vBox) {
+    public void addMessageToChat(String sender, String messageContent, boolean isSender) {
         HBox hBox = new HBox();
-        hBox.setAlignment(Pos.CENTER_LEFT);
-        hBox.setPadding(new Insets(5, 5,5,10));
-
-        Text text = new Text(messageFromClient);
-        TextFlow textFlow = new TextFlow(text);
+        Text senderText = new Text(sender + ": ");
+        Text messageText = new Text(messageContent);
+        TextFlow textFlow = new TextFlow(senderText, messageText);
 
         textFlow.setStyle("-fx-background-color: rgb(15,125,242);" +
-                " -fx-background-radius: 20px;");
-        textFlow.setPadding(new Insets(5,10,5,10));
+                "-fx-background-radius: 20px;");
+        textFlow.setPadding(new Insets(5, 10, 5, 10));
+
         hBox.getChildren().add(textFlow);
 
-        Platform.runLater(new Runnable() {
-            @Override
-            public void run() {
-                vBox.getChildren().add(hBox);
+        // Set alignment based on sender or receiver
+        if (isSender) {
+            hBox.setAlignment(Pos.CENTER_RIGHT);
+        } else {
+            hBox.setAlignment(Pos.CENTER_LEFT);
+        }
 
-            }
+        Platform.runLater(() -> {
+            vBox_message.getChildren().add(hBox);
         });
     }
 
+    private void setUserName() {
+        lblUserName.setText(name);
+    }
 
+    private void closeAll() {
+        try {
+            if (bufferedReader != null)
+                bufferedReader.close();
+            if (bufferedWriter != null)
+                bufferedWriter.close();
+            if (socket != null)
+                socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }
