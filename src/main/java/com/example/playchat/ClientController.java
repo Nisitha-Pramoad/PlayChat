@@ -77,7 +77,23 @@ public class ClientController implements Initializable {
         }
     }
 
-    
+    public void readMessage() {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String msfGroupChat;
+
+                while (socket.isConnected()) {
+                    try {
+                        msfGroupChat = bufferedReader.readLine();
+                        System.out.println(msfGroupChat);
+                    } catch (IOException e) {
+                        closeAll(socket, bufferedReader, bufferedWriter);
+                    }
+                }
+            }
+        }).start();
+    }
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
