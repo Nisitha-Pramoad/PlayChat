@@ -95,6 +95,32 @@ public class ClientController implements Initializable {
         }).start();
     }
 
+    public void closeAll(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter){
+        try {
+            if (bufferedReader!= null){
+                bufferedReader.close();
+            }
+            if (bufferedWriter!= null){
+                bufferedWriter.close();
+            }
+            if (socket!= null) {
+                socket.close();
+            }
+        } catch (IOException e) {
+            e.getStackTrace();
+        }
+    }
+
+    public static void main(String args[]) throws IOException {
+        Scanner sc = new Scanner(System.in);
+        System.out.println("Enter your name");
+        String name = sc.nextLine();
+        Socket socket = new Socket("localhost" , 1234);
+        ClientController clientController = new ClientController(socket, name);
+        clientController.readMessage();
+        clientController.sendMessage();
+    }
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
