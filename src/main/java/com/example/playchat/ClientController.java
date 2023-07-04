@@ -55,20 +55,19 @@ public class ClientController implements Initializable {
         }catch (IOException e) {
             closeAll(socket, bufferedReader, bufferedWriter);
         }
-
     }
 
-    public void sendMessage(){
+    public void sendMessage(String messageToClient){
         try {
             bufferedWriter.write(name);
             bufferedWriter.newLine();
             bufferedWriter.flush();
 
-            Scanner sc = new Scanner(System.in);
+            //Scanner sc = new Scanner(System.in);
 
             while (socket.isConnected()){
-                String messageToSend = sc.nextLine();
-                bufferedWriter.write(name + ":" + messageToSend);
+                String messageToSend = messageToClient;
+                bufferedWriter.write(name + " : " + messageToSend);
                 bufferedWriter.newLine();
                 bufferedWriter.flush();
             }
@@ -77,7 +76,7 @@ public class ClientController implements Initializable {
         }
     }
 
-    public void readMessage() {
+    public void readMessage(VBox vbox) {
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -87,6 +86,8 @@ public class ClientController implements Initializable {
                     try {
                         msfGroupChat = bufferedReader.readLine();
                         System.out.println(msfGroupChat);
+                        //
+                        addLabel(msfGroupChat, vbox);
                     } catch (IOException e) {
                         closeAll(socket, bufferedReader, bufferedWriter);
                     }
@@ -111,20 +112,20 @@ public class ClientController implements Initializable {
         }
     }
 
-    public static void main(String args[]) throws IOException {
+    /*public static void main(String args[]) throws IOException {
         Scanner sc = new Scanner(System.in);
-        System.out.println("Enter your name");
+        System.out.print("Enter your name : ");
         String name = sc.nextLine();
         Socket socket = new Socket("localhost" , 1234);
         ClientController clientController = new ClientController(socket, name);
         clientController.readMessage();
         clientController.sendMessage();
-    }
+    }*/
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        /*try {
+        try {
             server = new Server(new ServerSocket(1234));
         } catch (IOException e) {
             e.printStackTrace();
@@ -141,7 +142,8 @@ public class ClientController implements Initializable {
         });
 
         //server eka haraha client ewana msg vBox eke display karanawa
-        server.receiveMessageFromClient(vBox_message);
+        //server.receiveMessageFromClient(vBox_message);
+        readMessage(vBox_message);
 
         button_send.setOnAction(new EventHandler<ActionEvent>() {
             @Override
@@ -166,15 +168,16 @@ public class ClientController implements Initializable {
                     hBox.getChildren().add(textFlow);
                     vBox_message.getChildren().add(hBox);
 
-                    server.sendMessageToClient(messageToSend);
+                    //server.sendMessageToClient(messageToSend);
+                    sendMessage(messageToSend);
                     tf_message.clear();
                 }
             }
-        });*/
+        });
     }
 
     //message ekak awama eka gui ekata set karano
-    /*public static void addLabel(String messageFromClient, VBox vBox) {
+    public static void addLabel(String messageFromClient, VBox vBox) {
         HBox hBox = new HBox();
         hBox.setAlignment(Pos.CENTER_LEFT);
         hBox.setPadding(new Insets(5, 5,5,10));
@@ -194,7 +197,7 @@ public class ClientController implements Initializable {
 
             }
         });
-    }*/
+    }
 
 
 }

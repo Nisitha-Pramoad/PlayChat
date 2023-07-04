@@ -19,7 +19,7 @@ public class ClientHandler implements Runnable{
             this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.name = bufferedReader.readLine();
             clientHandlers.add(this);
-            boradcastMessage("SERVER" + name + "has entered in the room");
+            boradcastMessage("SERVER : " + name + " has entered in the room");
         } catch (IOException e) {
             closeAll(socket, bufferedReader, bufferedWriter);
         }
@@ -29,16 +29,16 @@ public class ClientHandler implements Runnable{
 
     @Override
     public void run() {
-        String messageFromClient;
 
-        try {
-            while (socket.isConnected()) {
+        String messageFromClient;
+        while (socket.isConnected()) {
+            try {
                 messageFromClient = bufferedReader.readLine();
                 boradcastMessage(messageFromClient);
+            } catch (IOException e) {
+                 closeAll(socket, bufferedReader, bufferedWriter);
+                 break;
             }
-        }catch (IOException e) {
-            closeAll(socket, bufferedReader, bufferedWriter);
-            break;
         }
     }
 
@@ -58,7 +58,7 @@ public class ClientHandler implements Runnable{
 
     public void removeClientHandler() {
         clientHandlers.remove(this);
-        boradcastMessage("server " + name + "has gone");
+        boradcastMessage("server : " + name + " has gone");
     }
 
     public void closeAll(Socket socket, BufferedReader bufferedReader, BufferedWriter bufferedWriter){
