@@ -18,8 +18,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-import java.io.IOException;
+import java.io.*;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -38,6 +39,25 @@ public class ClientController implements Initializable {
     private VBox vBox_message;
 
     private Server server;
+
+    private Socket socket;
+    private BufferedReader bufferedReader;
+    private BufferedWriter bufferedWriter;
+    private String name;
+
+    public ClientController(Socket socket, String name) {
+        try {
+            this.socket = socket;
+            this.bufferedWriter = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
+            this.bufferedReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            this.name = name;
+        }catch (IOException e) {
+            closeAll(socket, bufferedReader, bufferedWriter);
+        }
+
+    }
+
+    
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -113,4 +133,6 @@ public class ClientController implements Initializable {
             }
         });
     }*/
+
+
 }
