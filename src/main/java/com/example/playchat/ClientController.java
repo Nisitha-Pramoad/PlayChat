@@ -23,6 +23,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.Scanner;
 
 public class ClientController implements Initializable {
 
@@ -55,6 +56,25 @@ public class ClientController implements Initializable {
             closeAll(socket, bufferedReader, bufferedWriter);
         }
 
+    }
+
+    public void sendMessage(){
+        try {
+            bufferedWriter.write(name);
+            bufferedWriter.newLine();
+            bufferedWriter.flush();
+
+            Scanner sc = new Scanner(System.in);
+
+            while (socket.isConnected()){
+                String messageToSend = sc.nextLine();
+                bufferedWriter.write(name + ":" + messageToSend);
+                bufferedWriter.newLine();
+                bufferedWriter.flush();
+            }
+        } catch (IOException e) {
+            closeAll(socket, bufferedReader, bufferedWriter);
+        }
     }
 
     
