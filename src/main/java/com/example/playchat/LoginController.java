@@ -25,7 +25,7 @@ public class LoginController {
         String clientName = txtNewLoginClient.getText();
 
         Stage primaryStage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("client.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("view/client.fxml"));
 
         ClientController clientController = new ClientController(clientName);
         fxmlLoader.setController(clientController);
