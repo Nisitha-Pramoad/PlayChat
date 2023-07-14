@@ -88,6 +88,21 @@ public class ClientController implements Initializable {
             }
         });
 
+        // handle emojis
+        handleEmojiSelection();
+
+        // Set the client's username
+        setUserName();
+
+        // Start the client
+        startClient();
+    }
+
+    /**
+     * Handles the selection of emojis.
+     * Initializes the emoji picker, shows/hides the picker, and inserts the selected emoji into the text field.
+     */
+    private void handleEmojiSelection() {
         // Initialize the emoji picker
         emojiPicker = new EmojiPicker();
         VBox vBox = new VBox(emojiPicker);
@@ -111,13 +126,8 @@ public class ClientController implements Initializable {
             }
             emojiPicker.setVisible(false);
         });
-
-        // Set the client's username
-        setUserName();
-
-        // Start the client
-        startClient();
     }
+
 
     /**
      * Constructs a new ClientController with the specified name.
