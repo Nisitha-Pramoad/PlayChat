@@ -11,30 +11,49 @@ import java.net.ServerSocket;
 public class PlayChatApplication extends Application {
     @Override
     public void start(Stage stage) throws IOException {
+        // Load the login.fxml file using FXMLLoader
         FXMLLoader fxmlLoader = new FXMLLoader(PlayChatApplication.class.getResource("view/login.fxml"));
-        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
-        stage.setTitle("PlayChat");
-        stage.setScene(scene);
-        stage.show();
 
+        // Create the scene with the loaded login.fxml content
+        Scene scene = new Scene(fxmlLoader.load(), 600, 400);
+
+        // Set the title of the stage
+        stage.setTitle("PlayChat");
+
+        // Set the scene on the stage
+        stage.setScene(scene);
+
+        // Display the stage
+        stage.show();
     }
 
     public static void main(String[] args) {
+        // Start the server in a separate thread
         startServer();
-        launch();
 
+        // Launch the JavaFX application
+        launch();
     }
 
-    static void startServer(){
+    /**
+     * Starts the server in a separate thread.
+     */
+    static void startServer() {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                try{
+                try {
+                    // Create a ServerSocket on port 5000
                     ServerSocket serverSocket = new ServerSocket(5000);
+
+                    // Create a Server instance with the ServerSocket
                     Server server = new Server(serverSocket);
-                    System.out.println("server is connected..");
+
+                    System.out.println("Server is connected..");
+
+                    // Start the server and accept client connections
                     server.serverStart();
-                }catch (IOException e){
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
             }

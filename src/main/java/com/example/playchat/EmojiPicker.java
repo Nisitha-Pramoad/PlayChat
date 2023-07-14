@@ -17,6 +17,7 @@ public class EmojiPicker extends VBox {
     private ListView<String> emojiListView;
 
     public EmojiPicker() {
+        // Create the ListView to display the emojis
         emojiListView = new ListView<>();
 
         // Populate the emoji list
@@ -27,14 +28,19 @@ public class EmojiPicker extends VBox {
         }
         emojiListView.setItems(emojiList);
 
-        // Create the emoji picker hBox
+        // Create the HBox to hold the emoji ListView
         HBox hBox = new HBox(emojiListView);
         hBox.setPadding(new Insets(5));
 
-        // Set the picker hBox to the EmojiPicker
+        // Add the HBox to the EmojiPicker VBox
         getChildren().add(hBox);
     }
 
+    /**
+     * Returns the ListView containing the emojis.
+     *
+     * @return The emoji ListView.
+     */
     public ListView<String> getEmojiListView() {
         return emojiListView;
     }

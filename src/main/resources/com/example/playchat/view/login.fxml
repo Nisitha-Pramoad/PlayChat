@@ -9,7 +9,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.playchat.LoginController">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/19.0.2.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.playchat.LoginController">
    <children>
       <ImageView fitHeight="400.0" fitWidth="600.0">
          <image>
@@ -17,7 +17,7 @@
          </image>
       </ImageView>
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#a9bcc0" height="25.0" layoutX="188.0" layoutY="287.0" stroke="#a9bcc0" strokeType="OUTSIDE" strokeWidth="5.0" width="149.0" />
-      <TextField fx:id="txtNewLoginClient" layoutX="188.0" layoutY="287.0" promptText="Enter name" />
+      <TextField fx:id="txtNewLoginClient" layoutX="188.0" layoutY="287.0" onAction="#txtLoginFieldOnAction" promptText="Enter name" />
       <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#00b18a" height="25.0" layoutX="364.0" layoutY="287.0" stroke="#00b18a" strokeType="OUTSIDE" strokeWidth="5.0" width="49.0" />
       <Button layoutX="364.0" layoutY="286.0" mnemonicParsing="false" onAction="#btnLoginOnAction" prefHeight="25.0" prefWidth="49.0" style="-fx-background-color: FFD100;" text="LOGIN" textFill="#8d7a2e">
          <font>
