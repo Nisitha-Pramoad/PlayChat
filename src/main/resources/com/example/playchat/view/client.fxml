@@ -17,7 +17,7 @@
             <Image url="@../images/background.png" />
          </image>
       </ImageView>
-      <TextField fx:id="tf_message" layoutX="111.0" layoutY="337.0" prefHeight="30.0" prefWidth="321.0" promptText="Type a message..." style="-fx-background-radius: 8;" />
+      <TextField fx:id="tf_message" layoutX="111.0" layoutY="337.0" onAction="#txtMesssageFieldOnAction" prefHeight="30.0" prefWidth="321.0" promptText="Type a message..." style="-fx-background-radius: 8;" />
       <ScrollPane fx:id="sp_main" fitToWidth="true" layoutX="56.0" layoutY="91.0" prefHeight="231.0" prefWidth="489.0">
          <content>
             <VBox fx:id="vBox_message" prefHeight="229.0" prefWidth="487.0" />
@@ -33,7 +33,7 @@
             <Image url="@../images/girl.png" />
          </image>
       </ImageView>
-      <JFXButton fx:id="button_send" layoutX="502.0" layoutY="335.0" text="Button">
+      <JFXButton fx:id="button_send" layoutX="502.0" layoutY="335.0" onAction="#btnSendOnAction" text="Button">
          <graphic>
             <ImageView fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                <image>
@@ -57,7 +57,7 @@
             <Font size="1.0" />
          </font>
       </JFXButton>
-      <JFXButton fx:id="file_button" layoutX="60.0" layoutY="335.0" text="Button">
+      <JFXButton fx:id="file_button" layoutX="60.0" layoutY="335.0" onAction="#btnFileButtonOnAction" text="Button">
          <graphic>
             <ImageView fitHeight="34.0" fitWidth="34.0" pickOnBounds="true" preserveRatio="true">
                <image>

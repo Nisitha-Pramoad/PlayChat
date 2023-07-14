@@ -69,6 +69,12 @@
             <artifactId>emoji-java</artifactId>
             <version>5.1.1</version>
         </dependency>
+        <dependency>
+            <groupId>org.openjfx</groupId>
+            <artifactId>javafx-swing</artifactId>
+            <version>19</version>
+        </dependency>
+
 
 
         <!-- https://mvnrepository.com/artifact/org.controlsfx/controlsfx -->
