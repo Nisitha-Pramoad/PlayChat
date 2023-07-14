@@ -4,14 +4,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
-
-import java.io.DataInputStream;
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
 
 public class LoginController {
 
@@ -29,28 +26,43 @@ public class LoginController {
     @FXML
     void btnLoginOnAction(ActionEvent event) throws IOException {
         // Retrieve the client name from the text field
-        String clientName = txtNewLoginClient.getText();
+        String clientName = txtNewLoginClient.getText().trim();
 
-        // Create a new stage for the client chat
-        Stage primaryStage = new Stage();
+        if (!clientName.isEmpty()) {
+            // Create a new stage for the client chat
+            Stage primaryStage = new Stage();
 
-        // Load the client FXML file
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("view/client.fxml"));
+            // Load the client FXML file
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("view/client.fxml"));
 
-        // Create an instance of the ClientController and set it as the controller for the FXML file
-        ClientController clientController = new ClientController(clientName);
-        fxmlLoader.setController(clientController);
+            // Create an instance of the ClientController and set it as the controller for the FXML file
+            ClientController clientController = new ClientController(clientName);
+            fxmlLoader.setController(clientController);
 
-        // Set the scene for the client chat window
-        primaryStage.setScene(new Scene(fxmlLoader.load()));
-        primaryStage.setTitle(clientName);
-        primaryStage.setResizable(false);
-        primaryStage.centerOnScreen();
-        primaryStage.show();
+            // Set the scene for the client chat window
+            primaryStage.setScene(new Scene(fxmlLoader.load()));
+            primaryStage.setTitle("Chat Room");
+            primaryStage.setResizable(false);
+            primaryStage.centerOnScreen();
 
-        // Clear the login text field
-        txtNewLoginClient.clear();
+            // Add favicon to tile bar
+            Image image = new Image("com/example/playchat/images/favicon 2.png");
+            primaryStage.getIcons().add(image);
+
+            primaryStage.show();
+
+            // Clear the login text field
+            txtNewLoginClient.clear();
+        }else {
+            // Show an information alert if the client name is empty
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("Information");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter a name to join the chatroom.");
+            alert.showAndWait();
+        }
     }
+
 
     /**
      * Handles the action event when the Enter key is pressed in the login text field.

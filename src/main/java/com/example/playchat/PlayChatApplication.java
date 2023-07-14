@@ -3,6 +3,7 @@ package com.example.playchat;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -17,8 +18,14 @@ public class PlayChatApplication extends Application {
         // Create the scene with the loaded login.fxml content
         Scene scene = new Scene(fxmlLoader.load(), 600, 400);
 
+        //add favicon to tile bar
+        Image image = new Image("com/example/playchat/images/favicon 2.png");
+
         // Set the title of the stage
         stage.setTitle("PlayChat");
+
+        //set favicon to stage
+        stage.getIcons().add(image);
 
         // Set the scene on the stage
         stage.setScene(scene);
