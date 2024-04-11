@@ -54,7 +54,7 @@ This project is licensed under the MIT License.
 - EmojiPicker library Used for emoji support.
 - JavaFX Used for building the graphical user interface.
 
-For any questions or inquiries, please reach out to nisithapramoad99@gmail.com.
+For any questions or inquiries, please reach out to ma.nisithapramoad@gmail.com.
 
 <br>
 
